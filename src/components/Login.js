@@ -1,12 +1,14 @@
 import { useRef, useState, useEffect, useContext } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import useInput from '../hooks/useInput';
+import useToggle from '../hooks/useToggle';
 
 import axios from '../api/axios';
 const LOGIN_URL = '/auth';
 
 const Login = () => {
-    const { setAuth, persist, setPersist } = useAuth();
+    const { setAuth } = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -15,9 +17,11 @@ const Login = () => {
     const userRef = useRef();
     const errRef = useRef();
 
-    const [user, setUser] = useState('');
+    // const [user, setUser] = useLocalStorage('user', ''); //useState('');     //save data between refresh
+    const [user, resetUser, userAttribs] = useInput('user', '');
     const [pwd, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
+    const [check, toggleCheck] = useToggle('persist', false);
 
     //Start website with focus
     useEffect(() => {
@@ -41,7 +45,8 @@ const Login = () => {
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
             setAuth({ user, pwd, roles, accessToken });
-            setUser('');
+            //setUser('');
+            resetUser();
             setPwd('');
             navigate(from, { replace: true }); //replace actuall page with 'from'
         } catch (err) {
@@ -58,12 +63,12 @@ const Login = () => {
         }
     };
 
-    const togglePersist = () => {
-        setPersist((prev) => !prev);
-    };
-    useEffect(() => {
-        localStorage.setItem('persist', persist);
-    }, [persist]);
+    // const togglePersist = () => {
+    //     setPersist((prev) => !prev);
+    // };
+    // useEffect(() => {
+    //     localStorage.setItem('persist', persist);
+    // }, [persist]);
 
     return (
         <>
@@ -74,15 +79,7 @@ const Login = () => {
                 <h1>Sing In</h1>
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="username">Username:</label>
-                    <input
-                        type="text"
-                        id="username"
-                        ref={userRef}
-                        autoComplete="off"
-                        onChange={(e) => setUser(e.target.value)}
-                        value={user}
-                        required
-                    />
+                    <input type="text" id="username" ref={userRef} autoComplete="off" {...userAttribs} required />
                     <label htmlFor="password">Password:</label>
                     <input
                         type="password"
@@ -93,14 +90,14 @@ const Login = () => {
                     />
                     <button> Sign In </button>
                     <div className="persistCheck">
-                        <input type="checkbox" id="persist" onChange={togglePersist} checked={persist} />
+                        <input type="checkbox" id="persist" onChange={toggleCheck} checked={check} />
                         <label htmlFor="persist">Trust this device</label>
                     </div>
                 </form>
                 <p>
                     Need and account? <br />{' '}
                     <span className="line">
-                        {/*routet link there */}
+                        {/*router link there */}
                         <a href="#">Sign Up</a>
                     </span>
                 </p>
