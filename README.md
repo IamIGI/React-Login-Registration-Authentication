@@ -30,3 +30,15 @@ https://fontawesome.com/v5/docs/web/use-with/react
 # React Router Dom
 
 https://reactrouter.com/docs/en/v6/getting-started/overview
+
+# Disable react Devtools
+
+https://www.npmjs.com/package/@fvilers/disable-react-devtools
+
+# Bcrypt
+
+https://www.npmjs.com/package/bcrypt
+
+# jwt-decode
+
+https://www.npmjs.com/package/jwt-decode

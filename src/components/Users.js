@@ -17,8 +17,9 @@ const Users = () => {
                 const response = await axiosPrivate.get('/users', {
                     signal: controller.signal, //optional object that allows to abort request
                 });
-                console.log(response.data);
-                isMounted && setUsers(response.data);
+                const userNames = response.data.map((user) => user.username);
+                // console.log(response.data);
+                isMounted && setUsers(userNames);
             } catch (err) {
                 console.error(err);
                 navigate('/login', { state: { from: location }, replace: true }); // after user login again, he will comeback to this page
@@ -40,7 +41,7 @@ const Users = () => {
             {users?.length ? (
                 <ul>
                     {users.map((user, index) => (
-                        <li key={index}>{user?.username}</li>
+                        <li key={index}>{user}</li>
                     ))}
                 </ul>
             ) : (
